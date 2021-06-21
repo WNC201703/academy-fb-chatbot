@@ -47,7 +47,7 @@ router.get('/webhook', (req, res) => {
         console.log('Sender PSID: ' + senderPsid);
   
         // Check if the event is a message or postback and
-        // pass the event to the routerropriate handler function
+        // pass the event to the appropriate handler function
         if (webhookEvent.message) {
           handleMessage(senderPsid, webhookEvent.message);
         } else if (webhookEvent.postback) {
@@ -131,7 +131,7 @@ function handleMessage(senderPsid, receivedMessage) {
   // Sends response messages via the Send API
   function callSendAPI(senderPsid, response) {
   
-    // The page access token we have generated in your router settings
+    // The page access token we have generated in your app settings
     const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
   
     // Construct the message body
