@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+require("dotenv").config();
 
 // Adds support for GET requests to our webhook
 router.get('/webhook', (req, res) => {
