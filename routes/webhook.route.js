@@ -31,7 +31,6 @@ router.get('/', (req, res) => {
   
   // Creates the endpoint for your webhook
   router.post('/', (req, res) => {
-      console.log(body);
     let body = req.body;
   
     // Checks if this is an event from a page subscription
@@ -42,7 +41,6 @@ router.get('/', (req, res) => {
   
         // Gets the body of the webhook event
         let webhookEvent = entry.messaging[0];
-        console.log(webhookEvent);
   
         // Get the sender PSID
         let senderPsid = webhookEvent.sender.id;
