@@ -3,7 +3,7 @@ const router = express.Router();
 require("dotenv").config();
 
 // Adds support for GET requests to our webhook
-router.get('/webhook', (req, res) => {
+router.get('/', (req, res) => {
     // Your verify token. Should be a random string.
     const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
     console.log(VERIFY_TOKEN);
@@ -30,7 +30,7 @@ router.get('/webhook', (req, res) => {
   });
   
   // Creates the endpoint for your webhook
-  router.post('/webhook', (req, res) => {
+  router.post('/', (req, res) => {
     let body = req.body;
   
     // Checks if this is an event from a page subscription
