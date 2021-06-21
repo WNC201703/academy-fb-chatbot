@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
   router.get('/', (req, res) => {
 
     // Your verify token. Should be a random string.
-    let VERIFY_TOKEN = "<YOUR_VERIFY_TOKEN>"
+    let VERIFY_TOKEN = "iPwS77X37wFedvHm"
       
     // Parse the query params
     let mode = req.query['hub.mode'];
