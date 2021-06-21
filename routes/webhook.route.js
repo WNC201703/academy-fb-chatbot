@@ -2,6 +2,13 @@ const express = require('express');
 const router = express.Router();
 require("dotenv").config();
 const  request = require('request');
+
+const payloadType = {
+  SEARCH_BY_KEYWORD: 'SEARCH_BY_KEYWORD',
+  GET_COURSES_BY_CATEGORY: 'GET_COURSES_BY_CATEGORY',
+  VIEW_COURSE_DETAILS: 'VIEW_COURSE_DETAILS'
+}
+
 // Adds support for GET requests to our webhook
 router.get('/', (req, res) => {
     // Your verify token. Should be a random string.
@@ -92,13 +99,18 @@ function handleMessage(senderPsid, receivedMessage) {
               'buttons': [
                 {
                   'type': 'postback',
-                  'title': 'Yes!',
-                  'payload': 'yes',
+                  'title': 'Tìm kiếm khoá học theo từ khoá',
+                  'payload': payloadType.SEARCH_BY_KEYWORD,
                 },
                 {
                   'type': 'postback',
-                  'title': 'No!',
-                  'payload': 'no',
+                  'title': 'Duyệt khoá học theo danh mục',
+                  'payload': payloadType.GET_COURSES_BY_CATEGORY,
+                },
+                {
+                  'type': 'postback',
+                  'title': 'Xem chi tiết khoá học',
+                  'payload': payloadType.VIEW_COURSE_DETAILS,
                 }
               ],
             }]
@@ -119,12 +131,12 @@ function handleMessage(senderPsid, receivedMessage) {
     let payload = receivedPostback.payload;
   
     // Set the response based on the postback payload
-    if (payload === 'search-by-keyword') {
+    if (payload ===payloadType.SEARCH_BY_KEYWORD) {
       response = { 'text': 'Search by keyword!' };
-    } else if (payload === 'get-courses-by-category') {
+    } else if (payload === payloadType.GET_COURSES_BY_CATEGORY) {
       response = { 'text': 'Get courses by category' };
-    } if (payload === 'view-course-detail') {
-      response = { 'text': 'View course detail' };
+    } if (payload === payloadType.VIEW_COURSE_DETAILS) {
+      response = { 'text': 'View course details' };
     }
     // Send the message to acknowledge the postback
     callSendAPI(senderPsid, response);
@@ -159,4 +171,5 @@ function handleMessage(senderPsid, receivedMessage) {
     });
   }
  
+
   module.exports = router;
