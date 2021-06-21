@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 require("dotenv").config();
-
+const  request = require('request');
 // Adds support for GET requests to our webhook
 router.get('/', (req, res) => {
     // Your verify token. Should be a random string.
@@ -38,7 +38,8 @@ router.get('/', (req, res) => {
   
       // Iterates over each entry - there may be multiple if batched
       body.entry.forEach(function(entry) {
-  
+        
+        console.log(entry);
         // Gets the body of the webhook event
         let webhookEvent = entry.messaging[0];
   
