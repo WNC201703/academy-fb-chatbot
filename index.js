@@ -5,7 +5,7 @@ const app = express();
 app.use(express.static("./public"));
 app.use(express.json());
 
-let port = process.env.PORT || 1337;
+let port = process.env.PORT || 8080;
 
 require('./middlewares/routes.mdw')(app);
 
