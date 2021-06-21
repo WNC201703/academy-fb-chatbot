@@ -146,7 +146,7 @@ function handleMessage(senderPsid, receivedMessage) {
   
     // Send the HTTP request to the Messenger Platform
     request({
-      'uri': 'https://graph.facebook.com/v2.6/1111305539358156',
+      'uri': 'https://graph.facebook.com/v2.6/me/messages',
       'qs': { 'access_token': PAGE_ACCESS_TOKEN },
       'method': 'POST',
       'json': requestBody
