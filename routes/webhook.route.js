@@ -31,6 +31,7 @@ router.get('/', (req, res) => {
   
   // Creates the endpoint for your webhook
   router.post('/', (req, res) => {
+      console.log(body);
     let body = req.body;
   
     // Checks if this is an event from a page subscription
