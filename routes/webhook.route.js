@@ -6,12 +6,12 @@ require("dotenv").config();
 router.get('/webhook', (req, res) => {
     // Your verify token. Should be a random string.
     const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
-  
+    console.log(VERIFY_TOKEN);
     // Parse the query params
     let mode = req.query['hub.mode'];
     let token = req.query['hub.verify_token'];
     let challenge = req.query['hub.challenge'];
-  
+    console.log(mode,token,challenge);
     // Checks if a token and mode is in the query string of the request
     if (mode && token) {
   
@@ -69,7 +69,7 @@ router.get('/webhook', (req, res) => {
   // Handles messages events
 function handleMessage(senderPsid, receivedMessage) {
     let response;
-  
+    console.log(receivedMessage);
     // Checks if the message contains text
     if (receivedMessage.text) {
       // Create the payload for a basic text message, which
