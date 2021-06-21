@@ -69,7 +69,6 @@ router.get('/', (req, res) => {
   // Handles messages events
 function handleMessage(senderPsid, receivedMessage) {
     let response;
-    console.log(receivedMessage);
     // Checks if the message contains text
     if (receivedMessage.text) {
       // Create the payload for a basic text message, which
@@ -80,16 +79,16 @@ function handleMessage(senderPsid, receivedMessage) {
     } else if (receivedMessage.attachments) {
   
       // Get the URL of the message attachment
-      let attachmentUrl = receivedMessage.attachments[0].payload.url;
+      // let attachmentUrl = receivedMessage.attachments[0].payload.url;
       response = {
         'attachment': {
           'type': 'template',
           'payload': {
             'template_type': 'generic',
             'elements': [{
-              'title': 'Is this the right picture?',
+              'title': 'Chọn 1 trong các lựa chọn bên dưới?',
               'subtitle': 'Tap a button to answer.',
-              'image_url': attachmentUrl,
+              // 'image_url': attachmentUrl,
               'buttons': [
                 {
                   'type': 'postback',
@@ -120,10 +119,12 @@ function handleMessage(senderPsid, receivedMessage) {
     let payload = receivedPostback.payload;
   
     // Set the response based on the postback payload
-    if (payload === 'yes') {
-      response = { 'text': 'Thanks!' };
-    } else if (payload === 'no') {
-      response = { 'text': 'Oops, try sending another image.' };
+    if (payload === 'search-by-keyword') {
+      response = { 'text': 'Search by keyword!' };
+    } else if (payload === 'get-courses-by-category') {
+      response = { 'text': 'Get courses by category' };
+    } if (payload === 'view-course-detail') {
+      response = { 'text': 'View course detail' };
     }
     // Send the message to acknowledge the postback
     callSendAPI(senderPsid, response);
