@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Adds support for GET requests to our webhook
-app.get('/webhook', (req, res) => {
+router.get('/webhook', (req, res) => {
     // Your verify token. Should be a random string.
     const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
   
@@ -29,7 +29,7 @@ app.get('/webhook', (req, res) => {
   });
   
   // Creates the endpoint for your webhook
-  app.post('/webhook', (req, res) => {
+  router.post('/webhook', (req, res) => {
     let body = req.body;
   
     // Checks if this is an event from a page subscription
@@ -47,7 +47,7 @@ app.get('/webhook', (req, res) => {
         console.log('Sender PSID: ' + senderPsid);
   
         // Check if the event is a message or postback and
-        // pass the event to the appropriate handler function
+        // pass the event to the routerropriate handler function
         if (webhookEvent.message) {
           handleMessage(senderPsid, webhookEvent.message);
         } else if (webhookEvent.postback) {
@@ -131,7 +131,7 @@ function handleMessage(senderPsid, receivedMessage) {
   // Sends response messages via the Send API
   function callSendAPI(senderPsid, response) {
   
-    // The page access token we have generated in your app settings
+    // The page access token we have generated in your router settings
     const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
   
     // Construct the message body
