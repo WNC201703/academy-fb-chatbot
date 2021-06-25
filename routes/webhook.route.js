@@ -87,32 +87,59 @@ function handleMessage(senderPsid, receivedMessage) {
   
       // Get the URL of the message attachment
       // let attachmentUrl = receivedMessage.attachments[0].payload.url;
-      response = {
-        'attachment': {
-          'type': 'template',
-          'payload': {
-            'template_type': 'button',
-            'text': 'Chọn 1 trong các lựa chọn bên dưới?',
-            'buttons': [
-              {
-                'type': 'postback',
-                'title': 'Tìm khoá học theo từ khoá',
-                'payload': payloadType.SEARCH_BY_KEYWORD,
-              },
-              {
-                'type': 'postback',
-                'title': 'Duyệt khoá học theo danh mục',
-                'payload': payloadType.GET_COURSES_BY_CATEGORY,
-              },
-              {
-                'type': 'postback',
-                'title': 'Xem chi tiết khoá học',
-                'payload': payloadType.VIEW_COURSE_DETAILS,
-              }
-            ],
-          }
-        }
-      };
+
+      // response = {
+      //   'attachment': {
+      //     'type': 'template',
+      //     'payload': {
+      //       'template_type': 'button',
+      //       'text': 'Chọn 1 trong các lựa chọn bên dưới?',
+      //       'buttons': [
+      //         {
+      //           'type': 'postback',
+      //           'title': 'Tìm khoá học theo từ khoá',
+      //           'payload': payloadType.SEARCH_BY_KEYWORD,
+      //         },
+      //         {
+      //           'type': 'postback',
+      //           'title': 'Duyệt khoá học theo danh mục',
+      //           'payload': payloadType.GET_COURSES_BY_CATEGORY,
+      //         },
+      //         {
+      //           'type': 'postback',
+      //           'title': 'Xem chi tiết khoá học',
+      //           'payload': payloadType.VIEW_COURSE_DETAILS,
+      //         }
+      //       ],
+      //     }
+      //   }
+      // };
+
+      response ={
+        "persistent_menu": [
+            {
+                "locale": "default",
+                "composer_input_disabled": false,
+                "call_to_actions": [
+                  {
+                    'type': 'postback',
+                    'title': 'Tìm khoá học theo từ khoá',
+                    'payload': payloadType.SEARCH_BY_KEYWORD,
+                  },
+                  {
+                    'type': 'postback',
+                    'title': 'Duyệt khoá học theo danh mục',
+                    'payload': payloadType.GET_COURSES_BY_CATEGORY,
+                  },
+                  {
+                    'type': 'postback',
+                    'title': 'Xem chi tiết khoá học',
+                    'payload': payloadType.VIEW_COURSE_DETAILS,
+                  }
+                ]
+            }
+        ]
+    }
     }
   
     // Send the response message
