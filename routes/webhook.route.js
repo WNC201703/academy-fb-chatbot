@@ -117,9 +117,6 @@ function handleMessage(senderPsid, receivedMessage) {
       // };
 
       response ={
-        "get_started": {
-          "payload": "Get started"
-        },
         "persistent_menu": [
             {
                 "locale": "default",
