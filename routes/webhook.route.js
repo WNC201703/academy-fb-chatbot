@@ -91,8 +91,10 @@ function handleMessage(senderPsid, receivedMessage) {
         'attachment': {
           'type': 'template',
           'payload': {
-            'template_type': 'button',
+            'template_type': 'generic',
             'elements': [{
+              'title': 'Chọn 1 trong các lựa chọn bên dưới?',
+              'subtitle': 'Tap a button to answer.',
               // 'image_url': attachmentUrl,
               'buttons': [
                 {
