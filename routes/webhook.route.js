@@ -91,29 +91,25 @@ function handleMessage(senderPsid, receivedMessage) {
         'attachment': {
           'type': 'template',
           'payload': {
-            'template_type': 'generic',
-            'elements': [{
-              'title': 'Chọn 1 trong các lựa chọn bên dưới?',
-              'subtitle': 'Tap a button to answer.',
-              // 'image_url': attachmentUrl,
-              'buttons': [
-                {
-                  'type': 'postback',
-                  'title': 'Tìm khoá học theo từ khoá',
-                  'payload': payloadType.SEARCH_BY_KEYWORD,
-                },
-                {
-                  'type': 'postback',
-                  'title': 'Duyệt khoá học theo danh mục',
-                  'payload': payloadType.GET_COURSES_BY_CATEGORY,
-                },
-                {
-                  'type': 'postback',
-                  'title': 'Xem chi tiết khoá học',
-                  'payload': payloadType.VIEW_COURSE_DETAILS,
-                }
-              ],
-            }]
+            'template_type': 'button',
+            'text': 'Chọn 1 trong các lựa chọn bên dưới?',
+            'buttons': [
+              {
+                'type': 'postback',
+                'title': 'Tìm khoá học theo từ khoá',
+                'payload': payloadType.SEARCH_BY_KEYWORD,
+              },
+              {
+                'type': 'postback',
+                'title': 'Duyệt khoá học theo danh mục',
+                'payload': payloadType.GET_COURSES_BY_CATEGORY,
+              },
+              {
+                'type': 'postback',
+                'title': 'Xem chi tiết khoá học',
+                'payload': payloadType.VIEW_COURSE_DETAILS,
+              }
+            ],
           }
         }
       };
