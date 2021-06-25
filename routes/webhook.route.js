@@ -91,15 +91,13 @@ function handleMessage(senderPsid, receivedMessage) {
         'attachment': {
           'type': 'template',
           'payload': {
-            'template_type': 'generic',
+            'template_type': 'button',
             'elements': [{
-              'title': 'Chọn 1 trong các lựa chọn bên dưới?',
-              'subtitle': 'Tap a button to answer.',
               // 'image_url': attachmentUrl,
               'buttons': [
                 {
                   'type': 'postback',
-                  'title': 'Tìm kiếm khoá học theo từ khoá',
+                  'title': 'Tìm khoá học theo từ khoá',
                   'payload': payloadType.SEARCH_BY_KEYWORD,
                 },
                 {
