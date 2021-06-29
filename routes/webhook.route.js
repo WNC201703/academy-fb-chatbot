@@ -127,6 +127,13 @@ async function handleMessage(senderPsid, receivedMessage) {
                   'title': `${element.name}`,
                   'subtitle': `${element.shortDescription}`,
                   'image_url': `${element.imageUrl}`,
+                  'buttons':[
+                    {
+                      'type': 'postback',
+                      'title': 'Xem chi tiết!',
+                      'payload': 'view_detail',
+                    },
+                  ]
                 }]
               }
             }
