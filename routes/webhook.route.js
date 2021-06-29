@@ -105,7 +105,7 @@ router.post('/', (req, res) => {
 
 
 // Handles messages events
-function handleMessage(senderPsid, receivedMessage) {
+async function handleMessage(senderPsid, receivedMessage) {
   let response;
   // Checks if the message contains text
   if (receivedMessage.text) {
