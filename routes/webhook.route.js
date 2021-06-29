@@ -117,19 +117,20 @@ async function handleMessage(senderPsid, receivedMessage) {
         console.log(_response.data);
         let results = _response.data.results;
         results.forEach(element => {
-          
+
           response = {
-              "attachment":{
-                "type":"image", 
-                "payload":{
-                  "url":`${element.imageUrl}`, 
-                  "is_reusable":true
-                }
+            "text": `${element.name}`,
+            "attachment": {
+              "type": "image",
+              "payload": {
+                "url": `${element.imageUrl}`,
+                "is_reusable": true
+              }
             }
           };;
           callSendAPI(senderPsid, response);
         });
-        
+
       }
       catch (err) {
         console.error(err);
