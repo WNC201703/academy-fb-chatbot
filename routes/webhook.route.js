@@ -119,15 +119,18 @@ async function handleMessage(senderPsid, receivedMessage) {
         results.forEach(element => {
 
           response = {
-            "text": `${element.name}`,
-            "attachment": {
-              "type": "image",
-              "payload": {
-                "url": `${element.imageUrl}`,
-                "is_reusable": true
+            'attachment': {
+              'type': 'template',
+              'payload': {
+                'template_type': 'generic',
+                'elements': [{
+                  'title': `${element.name}`,
+                  'subtitle': `${element.shortDescription}`,
+                  'image_url': `${element.imageUrl}`,
+                }]
               }
             }
-          };;
+          };
           callSendAPI(senderPsid, response);
         });
 
