@@ -2,11 +2,42 @@ const express = require('express');
 const router = express.Router();
 require("dotenv").config();
 const request = require('request');
+const axios = require('axios');
 
 const payloadType = {
   SEARCH_BY_KEYWORD: 'SEARCH_BY_KEYWORD',
   GET_COURSES_BY_CATEGORY: 'GET_COURSES_BY_CATEGORY',
   VIEW_COURSE_DETAILS: 'VIEW_COURSE_DETAILS'
+}
+
+const responseMenu = {
+  'attachment': {
+    'type': 'template',
+    'payload': {
+      'template_type': 'generic',
+      'elements': [{
+        'title': 'Chọn 1 trong các lựa chọn bên dưới?',
+        'subtitle': 'Tap a button to answer.',
+        'buttons': [
+          {
+            'type': 'postback',
+            'title': 'Tìm khoá học theo từ khoá',
+            'payload': payloadType.SEARCH_BY_KEYWORD,
+          },
+          {
+            'type': 'postback',
+            'title': 'Duyệt khoá học theo danh mục',
+            'payload': payloadType.GET_COURSES_BY_CATEGORY,
+          },
+          {
+            'type': 'postback',
+            'title': 'Xem chi tiết khoá học',
+            'payload': payloadType.VIEW_COURSE_DETAILS,
+          }
+        ],
+      }]
+    }
+  }
 }
 
 // Adds support for GET requests to our webhook
@@ -76,61 +107,25 @@ router.post('/', (req, res) => {
 // Handles messages events
 function handleMessage(senderPsid, receivedMessage) {
   let response;
-  // response = {
-  //   'attachment': {
-  //     'type': 'template',
-  //     'payload': {
-  //       'template_type': 'generic',
-  //       'elements': [{
-  //         'title': 'Chọn 1 trong các lựa chọn bên dưới?',
-  //         'subtitle': 'Tap a button to answer.',
-  //         'buttons': [
-  //           {
-  //             'type': 'postback',
-  //             'title': 'Tìm khoá học theo từ khoá',
-  //             'payload': payloadType.SEARCH_BY_KEYWORD,
-  //           },
-  //           {
-  //             'type': 'postback',
-  //             'title': 'Duyệt khoá học theo danh mục',
-  //             'payload': payloadType.GET_COURSES_BY_CATEGORY,
-  //           },
-  //           {
-  //             'type': 'postback',
-  //             'title': 'Xem chi tiết khoá học',
-  //             'payload': payloadType.VIEW_COURSE_DETAILS,
-  //           }
-  //         ],
-  //       }]
-  //     }
-  //   }
-  // };
-
-  response = {
-    "persistent_menu": [
-      {
-        "locale": "default",
-        "composer_input_disabled": false,
-        "call_to_actions": [
-          {
-            "type": "postback",
-            "title": "Talk to an agent",
-            "payload": "CARE_HELP"
-          },
-          {
-            "type": "postback",
-            "title": "Outfit suggestions",
-            "payload": "CURATION"
-          },
-          {
-            "type": "web_url",
-            "title": "Shop now",
-            "url": "https://www.originalcoastclothing.com/",
-            "webview_height_ratio": "full"
-          }
-        ]
+  // Checks if the message contains text
+  if (receivedMessage.text) {
+    if (receivedMessage.text.search('search:') === 0) {
+      const keyword=receivedMessage.text.substring(7);
+      try{
+        const _response=await getByKeyword(keyword);
+        console.log(_response);
+        response=_response.data.results;
       }
-    ]
+      catch(err){
+        console.err(err);
+      }
+      
+      response = {
+        'text': `You sent the message: '${receivedMessage.text}'. Now send me an attachment!`
+      };
+    }
+  } else if (receivedMessage.attachments) {
+    response = responseMenu;
   };
 
   // Send the response message
@@ -146,7 +141,7 @@ function handlePostback(senderPsid, receivedPostback) {
 
   // Set the response based on the postback payload
   if (payload === payloadType.SEARCH_BY_KEYWORD) {
-    response = { 'text': 'Search by keyword!' };
+    response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "search:<TÊN KHOÁ HỌC>". Ví dụ: search:lập trình web' };
   } else if (payload === payloadType.GET_COURSES_BY_CATEGORY) {
     response = { 'text': 'Get courses by category' };
   } if (payload === payloadType.VIEW_COURSE_DETAILS) {
@@ -154,6 +149,12 @@ function handlePostback(senderPsid, receivedPostback) {
   }
   // Send the message to acknowledge the postback
   callSendAPI(senderPsid, response);
+}
+
+async function getByKeyword(keyword) {
+  const uri = `https://hd-academy-api.herokuapp.com/api?keyword=${keyword}&page_size=5&page_number=1`;
+  const response = await axios.get(uri);
+  return response;
 }
 
 // Sends response messages via the Send API
@@ -172,7 +173,7 @@ function callSendAPI(senderPsid, response) {
 
   // Send the HTTP request to the Messenger Platform
   request({
-    'uri': 'https://graph.facebook.com/v11.0/me/messages',
+    'uri': 'https://graph.facebook.com/v2.6/me/messages',
     'qs': { 'access_token': PAGE_ACCESS_TOKEN },
     'method': 'POST',
     'json': requestBody
