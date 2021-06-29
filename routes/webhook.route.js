@@ -113,8 +113,11 @@ async function handleMessage(senderPsid, receivedMessage) {
       const keyword=receivedMessage.text.substring(7);
       try{
         const _response=await getByKeyword(keyword);
-        console.log(_response);
-        response=_response.data;
+        console.log(_response.status);
+        console.log(_response.data);
+        response = {
+          'text': `${_response.data}`
+        };;
       }
       catch(err){
         console.log(err);
