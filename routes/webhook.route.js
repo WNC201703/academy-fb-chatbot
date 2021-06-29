@@ -117,7 +117,7 @@ async function handleMessage(senderPsid, receivedMessage) {
         response=_response.data.results;
       }
       catch(err){
-        console.err(err);
+        console.log(err);
       }
       
       response = {
