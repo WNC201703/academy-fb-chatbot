@@ -119,10 +119,6 @@ async function handleMessage(senderPsid, receivedMessage) {
       catch(err){
         console.log(err);
       }
-      
-      response = {
-        'text': `You sent the message: '${receivedMessage.text}'. Now send me an attachment!`
-      };
     }
   } else if (receivedMessage.attachments) {
     response = responseMenu;
