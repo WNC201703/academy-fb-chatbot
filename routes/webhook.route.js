@@ -116,13 +116,22 @@ async function handleMessage(senderPsid, receivedMessage) {
         console.log(_response.status);
         console.log(_response.data);
         let results = _response.data.results;
-        let str = '';
         results.forEach(element => {
-          str += element.name + '\n';
+          
+          response = {
+            "message":{
+              "attachment":{
+                "type":"image", 
+                "payload":{
+                  "url":"http://www.messenger-rocks.com/image.jpg", 
+                  "is_reusable":true
+                }
+              }
+            }
+          };;
+          callSendAPI(senderPsid, response);
         });
-        response = {
-          'text': `${str}`
-        };;
+        
       }
       catch (err) {
         console.error(err);
@@ -130,10 +139,11 @@ async function handleMessage(senderPsid, receivedMessage) {
     }
   } else if (receivedMessage.attachments) {
     response = responseMenu;
+    callSendAPI(senderPsid, response);
   };
 
   // Send the response message
-  callSendAPI(senderPsid, response);
+  // callSendAPI(senderPsid, response);
 }
 
 // Handles messaging_postbacks events
