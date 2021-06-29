@@ -110,16 +110,21 @@ async function handleMessage(senderPsid, receivedMessage) {
   // Checks if the message contains text
   if (receivedMessage.text) {
     if (receivedMessage.text.search('search:') === 0) {
-      const keyword=receivedMessage.text.substring(7);
-      try{
-        const _response=await getByKeyword(keyword);
+      const keyword = receivedMessage.text.substring(7);
+      try {
+        const _response = await getByKeyword(keyword);
         console.log(_response.status);
         console.log(_response.data);
+        let results = _response.data.results;
+        let str = '';
+        results.forEach(element => {
+          str += element.name + '\n';
+        });
         response = {
-          'text': `${_response.data}`
+          'text': `${str}`
         };;
       }
-      catch(err){
+      catch (err) {
         console.error(err);
       }
     }
