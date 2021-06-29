@@ -119,14 +119,12 @@ async function handleMessage(senderPsid, receivedMessage) {
         results.forEach(element => {
           
           response = {
-            "message":{
               "attachment":{
                 "type":"image", 
                 "payload":{
-                  "url":"http://www.messenger-rocks.com/image.jpg", 
+                  "url":`${element.imageUrl}`, 
                   "is_reusable":true
                 }
-              }
             }
           };;
           callSendAPI(senderPsid, response);
