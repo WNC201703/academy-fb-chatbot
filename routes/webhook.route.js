@@ -157,11 +157,11 @@ async function sendCategories(senderPsid) {
     const buttons = [];
     results.forEach(element => {
       buttons.push(
-        JSON.stringify({
+        {
           'type': 'postback',
           'title': `${element.name}`,
           'payload': `category:${element._id}`,
-        })
+        }
       );
     });
     console.log(buttons);
@@ -173,7 +173,7 @@ async function sendCategories(senderPsid) {
           'elements': [{
             'title': `Tìm kiếm khoá học theo danh mục`,
             'subtitle': `Chọn một trong các lựa chọn bên dưới`,
-            'buttons': buttons
+            'buttons': JSON.stringify(buttons)
           }]
         }
       }
