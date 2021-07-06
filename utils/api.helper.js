@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 async function getCoursesByKeyword(keyword) {
-    const uri = `https://hd-academy-api.herokuapp.com/api/courses?keyword=${keyword}&page_size=5&page_number=1`;
+    const uri = `https://hd-academy-api.herokuapp.com/api/courses?key_word=${keyword}&page_size=5&page_number=1`;
     const response = await axios.get(uri);
     return response;
 }
