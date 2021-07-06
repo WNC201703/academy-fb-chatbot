@@ -121,8 +121,8 @@ async function handlePostback(senderPsid, receivedPostback) {
   // Get the payload for the postback
   let payload = receivedPostback.payload;
 
-  if (payload.search('category:') === 0) {
-    const categoryId = receivedMessage.text.substring(9);
+  if (payload.search('category') === 0) {
+    const categoryId = receivedMessage.text.substring(8);
     await sendCoursesByCategory(senderPsid, categoryId);
     return;
   }
@@ -160,12 +160,10 @@ async function sendCategories(senderPsid) {
         {
           'type': 'postback',
           'title': `${element.name}`,
-          'payload': `category:${element._id}`,
+          'payload': `category${element._id}`,
         }
       );
     });
-    console.log(JSON.stringify(buttons));
-    console.log(JSON.parse(JSON.stringify(buttons)));
     const response = {
       'attachment': {
         'type': 'template',
@@ -174,20 +172,11 @@ async function sendCategories(senderPsid) {
           'elements': [{
             'title': `Tìm kiếm khoá học theo danh mục`,
             'subtitle': `Chọn một trong các lựa chọn bên dưới`,
-            'buttons': [
-              {
-                 'type': 'postback',
-                 'title': 'IT',
-                 'payload': 'category60c31e3a402ea31191ba72a4'
-                 }
-            ]
+            'buttons': buttons
           }]
         }
       }
     };
-    console.log(response.attachment.payload);
-    console.log(response.attachment.payload.elements[0]);
-    console.log(response.attachment.payload.elements[0].buttons);
     callSendAPI(senderPsid, response);
     return;
   } catch (err) {
