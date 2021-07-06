@@ -179,9 +179,9 @@ async function sendCategories(senderPsid) {
         }
       }
     };
-    console.log(response.payload.elements[0]);
-    console.log(response.payload);
-    console.log(response.payload.elements[0].buttons);
+    console.log(response.attachment.payload);
+    console.log(response.attachment.payload.elements[0]);
+    console.log(response.attachment.payload.elements[0].buttons);
     callSendAPI(senderPsid, response);
     return;
   } catch (err) {
