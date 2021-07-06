@@ -154,7 +154,6 @@ async function sendCategories(senderPsid) {
   try {
     const _response = await getCategories();
     let results = _response.data;
-    console.log(_response);
     const buttons = [];
     results.forEach(element => {
       buttons.push(
@@ -174,7 +173,7 @@ async function sendCategories(senderPsid) {
           'elements': [{
             'title': `Tìm kiếm khoá học theo danh mục`,
             'subtitle': `Chọn một trong các lựa chọn bên dưới`,
-            'buttons': [...buttons]
+            'buttons': buttons
           }]
         }
       }
