@@ -176,30 +176,30 @@ async function sendCategories(senderPsid) {
             'subtitle': `Chọn một trong các lựa chọn bên dưới`,
             'buttons': [
               {
-                 'type': 'postback',
-                 'title': 'IT',
-                 'payload': 'category60c31e3a402ea31191ba72a4'
-                 },
-                 {
-                  'type': 'postback',
-                  'title': 'IT',
-                  'payload': 'category60c31e3a402ea31191ba72a4'
-                  },
-                  {
-                    'type': 'postback',
-                    'title': 'IT',
-                    'payload': 'category60c31e3a402ea31191ba72a4'
-                    },
-                    {
-                      'type': 'postback',
-                      'title': 'IT',
-                      'payload': 'category60c31e3a402ea31191ba72a4'
-                      },
-                      {
-                        'type': 'postback',
-                        'title': 'IT',
-                        'payload': 'category60c31e3a402ea31191ba72a4'
-                        }
+                'type': 'postback',
+                'title': 'IT',
+                'payload': 'category60c31e3a402ea31191ba72a4'
+              },
+              {
+                'type': 'postback',
+                'title': 'IT',
+                'payload': 'category60c31e3a402ea31191ba72a4'
+              },
+              {
+                'type': 'postback',
+                'title': 'IT',
+                'payload': 'category60c31e3a402ea31191ba72a4'
+              },
+              {
+                'type': 'postback',
+                'title': 'IT',
+                'payload': 'category60c31e3a402ea31191ba72a4'
+              },
+              {
+                'type': 'postback',
+                'title': 'IT',
+                'payload': 'category60c31e3a402ea31191ba72a4'
+              }
             ]
           }]
         }
@@ -215,41 +215,44 @@ async function sendCategories(senderPsid) {
   }
 }
 
-async function sendCoursesByCategory(senderPsid,categoryId) {
+async function sendCoursesByCategory(senderPsid, categoryId) {
   try {
     const _response = await getCoursesByCategory(categoryId);
     let results = _response.data.results;
-    sendCourses(senderPsid,results)      
+    sendCourses(senderPsid, results)
   } catch (err) {
     console.error(err);
   }
 }
 
 function sendCourses(senderPsid, results) {
+  const elements = [];
   results.forEach(element => {
-    const response = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'generic',
-          'elements': [{
-            'title': `${element.name}`,
-            'subtitle': `${element.shortDescription}`,
-            'image_url': `${element.imageUrl}`,
-            'buttons': [
-              {
-                'type': 'postback',
-                'title': 'Xem chi tiết!',
-                'payload': 'view_detail',
-              },
-            ]
-          }]
-        }
-      }
-    };
-    callSendAPI(senderPsid, response);
-    return;
+    elements.push({
+      'title': `${element.name}`,
+      'subtitle': `${element.shortDescription}`,
+      'image_url': `${element.imageUrl}`,
+      'buttons': [
+        {
+          'type': 'postback',
+          'title': 'Xem chi tiết!',
+          'payload': 'view_detail',
+        },
+      ]
+    });
   });
+
+  const response = {
+    'attachment': {
+      'type': 'template',
+      'payload': {
+        'template_type': 'generic',
+        'elements': elements
+      }
+    }
+  };
+  callSendAPI(senderPsid, response);
+  return;
 }
 
 // Sends response messages via the Send API
