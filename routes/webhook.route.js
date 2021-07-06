@@ -173,12 +173,17 @@ async function sendCategories(senderPsid) {
           'elements': [{
             'title': `Tìm kiếm khoá học theo danh mục`,
             'subtitle': `Chọn một trong các lựa chọn bên dưới`,
-            'buttons': []
+            'buttons': [
+              {
+                'type': 'postback',
+                'title': 'Xem chi tiết!',
+                'payload': 'view_detail',
+              },
+            ]
           }]
         }
       }
     };
-    console.log(response);
     callSendAPI(senderPsid, response);
     return;
   } catch (err) {
