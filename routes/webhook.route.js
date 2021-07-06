@@ -174,7 +174,38 @@ async function sendCategories(senderPsid) {
           'elements': [{
             'title': `Tìm kiếm khoá học theo danh mục`,
             'subtitle': `Chọn một trong các lựa chọn bên dưới`,
-            'buttons': buttons
+            'buttons': [
+              {
+                 'type': 'postback',
+                 'title': 'IT',
+                 'payload': 'category:60c31e3a402ea31191ba72a4'
+                 },
+                 {
+                 'type': 'postback',
+                 'title': 'Web development',
+                 'payload': 'category:60d542ff11160541018c9eb6'
+                 },
+                 {
+                 'type': 'postback',
+                 'title': 'Mobile Development',
+                 'payload': 'category:60d5438fc84e49412f453a46'
+                 },
+                 {
+                 'type': 'postback',
+                 'title': 'Design',
+                 'payload': 'category:60e25b5afb5edc001538909e'
+                 },
+                 {
+                 'type': 'postback',
+                 'title': 'Web Design',
+                 'payload': 'category:60e25b722930500015eeabfd'
+                 },
+                 {
+                 'type': 'postback',
+                 'title': 'Game Design',
+                 'payload': 'category:60e25b9a2930500015eeabff'
+                 }
+            ]
           }]
         }
       }
