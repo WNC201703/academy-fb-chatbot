@@ -189,7 +189,17 @@ async function sendCategories(senderPsid) {
                     'type': 'postback',
                     'title': 'IT',
                     'payload': 'category60c31e3a402ea31191ba72a4'
-                    }
+                    },
+                    {
+                      'type': 'postback',
+                      'title': 'IT',
+                      'payload': 'category60c31e3a402ea31191ba72a4'
+                      },
+                      {
+                        'type': 'postback',
+                        'title': 'IT',
+                        'payload': 'category60c31e3a402ea31191ba72a4'
+                        }
             ]
           }]
         }
