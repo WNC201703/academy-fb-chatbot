@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 require("dotenv").config();
 const request = require('request');
-const axios = require('axios');
+const { getCoursesByKeyword, getCategories, getCoursesByCategory } = require('../utils/api.helper');
 
 const payloadType = {
   SEARCH_BY_KEYWORD: 'SEARCH_BY_KEYWORD',
@@ -106,67 +106,32 @@ router.post('/', (req, res) => {
 
 // Handles messages events
 async function handleMessage(senderPsid, receivedMessage) {
-  let response;
-  // Checks if the message contains text
-  if (receivedMessage.text) {
-    if (receivedMessage.text.search('search:') === 0) {
-      const keyword = receivedMessage.text.substring(7);
-      try {
-        const _response = await getByKeyword(keyword);
-        console.log(_response.status);
-        console.log(_response.data);
-        let results = _response.data.results;
-        results.forEach(element => {
-
-          response = {
-            'attachment': {
-              'type': 'template',
-              'payload': {
-                'template_type': 'generic',
-                'elements': [{
-                  'title': `${element.name}`,
-                  'subtitle': `${element.shortDescription}`,
-                  'image_url': `${element.imageUrl}`,
-                  'buttons':[
-                    {
-                      'type': 'postback',
-                      'title': 'Xem chi tiết!',
-                      'payload': 'view_detail',
-                    },
-                  ]
-                }]
-              }
-            }
-          };
-          callSendAPI(senderPsid, response);
-        });
-
-      }
-      catch (err) {
-        console.error(err);
-      }
-    }
-  } else if (receivedMessage.attachments) {
-    response = responseMenu;
-    callSendAPI(senderPsid, response);
-  };
-
-  // Send the response message
-  // callSendAPI(senderPsid, response);
+  if (receivedMessage.text && receivedMessage.text.search('search:') === 0) {
+    const keyword = receivedMessage.text.substring(7);
+    await handleGetCoursesByKeyword(senderPsid, keyword);
+    return;
+  }
+  callSendAPI(senderPsid, responseMenu);
 }
 
 // Handles messaging_postbacks events
-function handlePostback(senderPsid, receivedPostback) {
+async function handlePostback(senderPsid, receivedPostback) {
   let response;
 
   // Get the payload for the postback
   let payload = receivedPostback.payload;
 
-  // Set the response based on the postback payload
+  if (payload.search('category:') === 0) {
+    const categoryId = receivedMessage.text.substring(9);
+    await sendCoursesByCategory(senderPsid, categoryId);
+    return;
+  }
+
   if (payload === payloadType.SEARCH_BY_KEYWORD) {
     response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "search:<TÊN KHOÁ HỌC>". Ví dụ: search:lập trình web' };
   } else if (payload === payloadType.GET_COURSES_BY_CATEGORY) {
-    response = { 'text': 'Get courses by category' };
+    await sendCategories(senderPsid);
+    return;
   } if (payload === payloadType.VIEW_COURSE_DETAILS) {
     response = { 'text': 'View course details' };
   }
@@ -174,10 +139,86 @@ function handlePostback(senderPsid, receivedPostback) {
   callSendAPI(senderPsid, response);
 }
 
-async function getByKeyword(keyword) {
-  const uri = `https://hd-academy-api.herokuapp.com/api/courses?keyword=${keyword}&page_size=5&page_number=1`;
-  const response = await axios.get(uri);
-  return response;
+async function handleGetCoursesByKeyword(senderPsid, keyword) {
+  try {
+    const _response = await getCoursesByKeyword(keyword);
+    let results = _response.data.results;
+    sendCourses(senderPsid, results);
+  }
+  catch (err) {
+    console.error(err);
+  }
+}
+
+async function sendCategories(senderPsid) {
+  try {
+    const _response = await getCategories(keyword);
+    let results = _response.data;
+    const buttons = [];
+    results.forEach(element => {
+      buttons.push(
+        {
+          'type': 'postback',
+          'title': `${element.name}`,
+          'payload': `category:${element._id}`,
+        },
+      );
+    });
+    const response = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': [{
+            'title': `Tìm kiếm khoá học theo danh mục`,
+            'subtitle': `Chọn một trong các lựa chọn bên dưới`,
+            'buttons': buttons
+          }]
+        }
+      }
+    };
+    callSendAPI(senderPsid, response);
+    return;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function sendCoursesByCategory(senderPsid,categoryId) {
+  try {
+    const _response = await getCoursesByCategory(categoryId);
+    let results = _response.data.results;
+    sendCourses(senderPsid,results)      
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function sendCourses(senderPsid, results) {
+  results.forEach(element => {
+    const response = {
+      'attachment': {
+        'type': 'template',
+        'payload': {
+          'template_type': 'generic',
+          'elements': [{
+            'title': `${element.name}`,
+            'subtitle': `${element.shortDescription}`,
+            'image_url': `${element.imageUrl}`,
+            'buttons': [
+              {
+                'type': 'postback',
+                'title': 'Xem chi tiết!',
+                'payload': 'view_detail',
+              },
+            ]
+          }]
+        }
+      }
+    };
+    callSendAPI(senderPsid, response);
+    return;
+  });
 }
 
 // Sends response messages via the Send API
