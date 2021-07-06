@@ -165,6 +165,7 @@ async function sendCategories(senderPsid) {
       );
     });
     console.log(JSON.stringify(buttons));
+    console.log(JSON.parse(JSON.stringify(buttons)));
     const response = {
       'attachment': {
         'type': 'template',
