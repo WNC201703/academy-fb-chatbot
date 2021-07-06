@@ -106,7 +106,7 @@ router.post('/', (req, res) => {
 
 // Handles messages events
 async function handleMessage(senderPsid, receivedMessage) {
-  if (receivedMessage.text && receivedMessage.text.search('search:') === 0) {
+  if (receivedMessage.text && receivedMessage.text.toLowerCase().search('search:') === 0) {
     const keyword = receivedMessage.text.substring(7);
     await handleGetCoursesByKeyword(senderPsid, keyword);
     return;
@@ -152,7 +152,7 @@ async function handleGetCoursesByKeyword(senderPsid, keyword) {
 
 async function sendCategories(senderPsid) {
   try {
-    const _response = await getCategories(keyword);
+    const _response = await getCategories();
     let results = _response.data;
     const buttons = [];
     results.forEach(element => {
