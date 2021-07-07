@@ -105,7 +105,7 @@ async function handlePostback(senderPsid, receivedPostback) {
                 },
                 "message": { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react' }
             }
-            postRequest(messengerUri.MESSAGES,);
+            postRequest(messengerUri.MESSAGES,requestBody);
             return;
         case payloadType.GET_COURSES_BY_CATEGORY:
             return;
