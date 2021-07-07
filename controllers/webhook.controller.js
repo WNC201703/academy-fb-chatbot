@@ -47,20 +47,20 @@ async function handleMessage(senderPsid, receivedMessage) {
 
 async function handleGetCoursesByKeyword(senderPsid, keyword) {
     try {
-      const _response = await getCoursesByKeyword(keyword);
-      let results = _response.data.results;
-      sendCourses(senderPsid, results);
+        const _response = await getCoursesByKeyword(keyword);
+        let results = _response.data.results;
+        sendCourses(senderPsid, results);
     }
     catch (err) {
-      console.error(err);
+        console.error(err);
     }
-  }
+}
 
 function sendCourses(senderPsid, results) {
     const elements = [];
     results.forEach(element => {
         elements.push({
-            'title': `${element.name} (${element.numberOfReviews} reviews, ${averageRating}/10)`,
+            'title': `${element.name} (${element.numberOfReviews} reviews)`,
             'subtitle': `${element.shortDescription}`,
             'image_url': `${element.imageUrl}`,
             'buttons': [
@@ -94,6 +94,31 @@ function sendCourses(senderPsid, results) {
     return;
 }
 
+async function handlePostback(senderPsid, receivedPostback) {
+    let payload = receivedPostback.payload;
+
+    switch (payload) {
+        case payloadType.SEARCH_BY_KEYWORD:
+            response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react' };
+            return;
+        case payloadType.GET_COURSES_BY_CATEGORY:
+            return;
+
+        case payloadType.VIEW_COURSE_DETAILS:
+            return;
+
+        case payloadType.GET_STARTED:
+            setupPersistentMenu(senderPsid);
+            return;
+    }
+
+    if (payload.search('category:') === 0) {
+        const categoryId = receivedMessage.text.substring(9);
+        await sendCoursesByCategory(senderPsid, categoryId);
+        return;
+    }
+}
+
 function getStarted() {
     const requestBody = {
         "get_started": {
@@ -117,5 +142,6 @@ module.exports = {
     setupWhitelistedDomains,
     setupPersistentMenu,
     handleMessage,
-    sendCourses
+    sendCourses,
+    handlePostback
 }

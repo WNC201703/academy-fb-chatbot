@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 require("dotenv").config();
 const { payloadType } = require('../utils/constant')
-const { setupPersistentMenu, handleMessage } = require('../controllers/webhook.controller')
+const {handleMessage,handlePostback } = require('../controllers/webhook.controller')
 
 // Adds support for GET requests to our webhook
 router.get('/', (req, res) => {
@@ -64,52 +64,6 @@ router.post('/', (req, res) => {
     res.sendStatus(404);
   }
 });
-
-
-
-
-// Handles messaging_postbacks events
-async function handlePostback(senderPsid, receivedPostback) {
-  // Get the payload for the postback
-  let payload = receivedPostback.payload;
-  console.log('payload',payload);
-  switch (payload) {
-    case payloadType.SEARCH_BY_KEYWORD:
-      response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "search:<TÊN KHOÁ HỌC>". Ví dụ: search:lập trình web' };
-      return;
-
-    case payloadType.GET_COURSES_BY_CATEGORY:
-      return;
-
-    case payloadType.VIEW_COURSE_DETAILS:
-      return;
-
-    case payloadType.GET_STARTED:
-      setupPersistentMenu(senderPsid);
-      return;
-  }
-
-
-  if (payload === payloadType.SEARCH_BY_KEYWORD) {
-   
-    return;
-  } else if (payload === payloadType.GET_COURSES_BY_CATEGORY) {
-    await sendCategories(senderPsid);
-    return;
-  } if (payload === payloadType.VIEW_COURSE_DETAILS) {
-    response = { 'text': 'View course details' };
-    return;
-  }
-
-  if (payload.search('category:') === 0) {
-    const categoryId = receivedMessage.text.substring(9);
-    await sendCoursesByCategory(senderPsid, categoryId);
-    return;
-  }
-
-  // callSendAPI(senderPsid, response);
-}
-
 
 // async function sendCategories(senderPsid) {
 //   try {
