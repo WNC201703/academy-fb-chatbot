@@ -60,7 +60,7 @@ function sendCourses(senderPsid, results) {
     const elements = [];
     results.forEach(element => {
         elements.push({
-            'title': `${element.name}(${element.numberOfReviews} reviews)`,
+            'title': `${element.name} (${element.numberOfReviews} reviews, ${averageRating}/10)`,
             'subtitle': `${element.shortDescription}`,
             'image_url': `${element.imageUrl}`,
             'buttons': [

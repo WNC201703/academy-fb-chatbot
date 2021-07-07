@@ -72,6 +72,7 @@ router.post('/', (req, res) => {
 async function handlePostback(senderPsid, receivedPostback) {
   // Get the payload for the postback
   let payload = receivedPostback.payload;
+  console.log('payload',payload);
   switch (payload) {
     case payloadType.SEARCH_BY_KEYWORD:
       response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "search:<TÊN KHOÁ HỌC>". Ví dụ: search:lập trình web' };
