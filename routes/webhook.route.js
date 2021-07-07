@@ -111,7 +111,8 @@ async function handleMessage(senderPsid, receivedMessage) {
     await handleGetCoursesByKeyword(senderPsid, keyword);
     return;
   }
-  callSendAPI(senderPsid, responseMenu);
+  // callSendAPI(senderPsid, responseMenu);
+  callSendPersistentMenu(senderPsid);
 }
 
 // Handles messaging_postbacks events
@@ -272,6 +273,56 @@ function callSendAPI(senderPsid, response) {
   // Send the HTTP request to the Messenger Platform
   request({
     'uri': 'https://graph.facebook.com/v2.6/me/messages',
+    'qs': { 'access_token': PAGE_ACCESS_TOKEN },
+    'method': 'POST',
+    'json': requestBody
+  }, (err, _res, _body) => {
+    if (!err) {
+      console.log('Message sent!');
+    } else {
+      console.error('Unable to send message:' + err);
+    }
+  });
+}
+
+// Sends response messages via the Send API
+function callSendPersistentMenu(senderPsid) {
+
+  // The page access token we have generated in your app settings
+  const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+
+  // Construct the message body
+  let requestBody = {
+    'recipient': senderPsid,
+    "persistent_menu": [
+      {
+        "locale": "default",
+        "composer_input_disabled": false,
+        "call_to_actions": [
+          {
+            "type": "postback",
+            "title": "Talk to an agent",
+            "payload": "CARE_HELP"
+          },
+          {
+            "type": "postback",
+            "title": "Outfit suggestions",
+            "payload": "CURATION"
+          },
+          {
+            "type": "web_url",
+            "title": "Shop now",
+            "url": "https://www.originalcoastclothing.com/",
+            "webview_height_ratio": "full"
+          }
+        ]
+      }
+    ]
+  };
+
+  // Send the HTTP request to the Messenger Platform
+  request({
+    'uri': 'https://graph.facebook.com/v11.0/me/custom_user_settings',
     'qs': { 'access_token': PAGE_ACCESS_TOKEN },
     'method': 'POST',
     'json': requestBody
