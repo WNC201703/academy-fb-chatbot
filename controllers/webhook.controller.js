@@ -38,7 +38,7 @@ function setupPersistentMenu(senderPsid) {
 
 
 async function handleMessage(senderPsid, receivedMessage) {
-    console.log('handle')
+    console.log('handle',receivedMessage.text,eceivedMessage.text.toLowerCase().search('#'));
     if (receivedMessage.text && receivedMessage.text.toLowerCase().search('#') === 0) {
         const keyword = receivedMessage.text.substring(7);
         await handleGetCoursesByKeyword(senderPsid, keyword);
@@ -47,6 +47,7 @@ async function handleMessage(senderPsid, receivedMessage) {
 }
 
 async function handleGetCoursesByKeyword(senderPsid, keyword) {
+    console.log(handleGetcoursesByKeyword);
     try {
         const _response = await getCoursesByKeyword(keyword);
         let results = _response.data.results;
