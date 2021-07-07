@@ -1,58 +1,19 @@
 const express = require('express');
 const router = express.Router();
 require("dotenv").config();
-const request = require('request');
-const { getCoursesByKeyword, getCategories, getCoursesByCategory } = require('../utils/api.helper');
-
-const payloadType = {
-  SEARCH_BY_KEYWORD: 'SEARCH_BY_KEYWORD',
-  GET_COURSES_BY_CATEGORY: 'GET_COURSES_BY_CATEGORY',
-  VIEW_COURSE_DETAILS: 'VIEW_COURSE_DETAILS'
-}
-
-const responseMenu = {
-  'attachment': {
-    'type': 'template',
-    'payload': {
-      'template_type': 'generic',
-      'elements': [{
-        'title': 'Chọn 1 trong các lựa chọn bên dưới?',
-        'subtitle': 'Tap a button to answer.',
-        'buttons': [
-          {
-            'type': 'postback',
-            'title': 'Tìm khoá học theo từ khoá',
-            'payload': payloadType.SEARCH_BY_KEYWORD,
-          },
-          {
-            'type': 'postback',
-            'title': 'Duyệt khoá học theo danh mục',
-            'payload': payloadType.GET_COURSES_BY_CATEGORY,
-          },
-          {
-            'type': 'postback',
-            'title': 'Xem chi tiết khoá học',
-            'payload': payloadType.VIEW_COURSE_DETAILS,
-          }
-        ],
-      }]
-    }
-  }
-}
+const { payloadType } = require('../utils/constant')
+const { setupPersistentMenu, handleMessage } = require('../controllers/webhook.controller')
 
 // Adds support for GET requests to our webhook
 router.get('/', (req, res) => {
   // Your verify token. Should be a random string.
   const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
-  console.log(VERIFY_TOKEN);
   // Parse the query params
   let mode = req.query['hub.mode'];
   let token = req.query['hub.verify_token'];
   let challenge = req.query['hub.challenge'];
-  console.log(mode, token, challenge);
   // Checks if a token and mode is in the query string of the request
   if (mode && token) {
-
     // Checks the mode and token sent is correct
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
 
@@ -69,6 +30,7 @@ router.get('/', (req, res) => {
 
 // Creates the endpoint for your webhook
 router.post('/', (req, res) => {
+
   let body = req.body;
 
   // Checks if this is an event from a page subscription
@@ -104,23 +66,39 @@ router.post('/', (req, res) => {
 });
 
 
-// Handles messages events
-async function handleMessage(senderPsid, receivedMessage) {
-  if (receivedMessage.text && receivedMessage.text.toLowerCase().search('search:') === 0) {
-    const keyword = receivedMessage.text.substring(7);
-    await handleGetCoursesByKeyword(senderPsid, keyword);
-    return;
-  }
-  // callSendAPI(senderPsid, responseMenu);
-  callSendPersistentMenu(senderPsid);
-}
+
 
 // Handles messaging_postbacks events
 async function handlePostback(senderPsid, receivedPostback) {
-  let response;
-
   // Get the payload for the postback
   let payload = receivedPostback.payload;
+  switch (payload) {
+    case payloadType.SEARCH_BY_KEYWORD:
+      response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "search:<TÊN KHOÁ HỌC>". Ví dụ: search:lập trình web' };
+      return;
+
+    case payloadType.GET_COURSES_BY_CATEGORY:
+      return;
+
+    case payloadType.VIEW_COURSE_DETAILS:
+      return;
+
+    case payloadType.GET_STARTED:
+      setupPersistentMenu(senderPsid);
+      return;
+  }
+
+
+  if (payload === payloadType.SEARCH_BY_KEYWORD) {
+   
+    return;
+  } else if (payload === payloadType.GET_COURSES_BY_CATEGORY) {
+    await sendCategories(senderPsid);
+    return;
+  } if (payload === payloadType.VIEW_COURSE_DETAILS) {
+    response = { 'text': 'View course details' };
+    return;
+  }
 
   if (payload.search('category:') === 0) {
     const categoryId = receivedMessage.text.substring(9);
@@ -128,213 +106,80 @@ async function handlePostback(senderPsid, receivedPostback) {
     return;
   }
 
-  if (payload === payloadType.SEARCH_BY_KEYWORD) {
-    response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "search:<TÊN KHOÁ HỌC>". Ví dụ: search:lập trình web' };
-  } else if (payload === payloadType.GET_COURSES_BY_CATEGORY) {
-    await sendCategories(senderPsid);
-    return;
-  } if (payload === payloadType.VIEW_COURSE_DETAILS) {
-    response = { 'text': 'View course details' };
-  }
-  // Send the message to acknowledge the postback
-  callSendAPI(senderPsid, response);
+  // callSendAPI(senderPsid, response);
 }
 
-async function handleGetCoursesByKeyword(senderPsid, keyword) {
-  try {
-    const _response = await getCoursesByKeyword(keyword);
-    let results = _response.data.results;
-    sendCourses(senderPsid, results);
-  }
-  catch (err) {
-    console.error(err);
-  }
-}
 
-async function sendCategories(senderPsid) {
-  try {
-    const _response = await getCategories();
-    let results = _response.data;
-    const buttons = [];
-    results.forEach(element => {
-      buttons.push(
-        {
-          'type': 'postback',
-          'title': `${element.name}`,
-          'payload': `category:${element._id}`,
-        }
-      );
-    });
-    console.log(JSON.stringify(buttons));
-    console.log(JSON.parse(JSON.stringify(buttons)));
-    const response = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'generic',
-          'elements': [{
-            'title': `Tìm kiếm khoá học theo danh mục`,
-            'subtitle': `Chọn một trong các lựa chọn bên dưới`,
-            'buttons': [
-              {
-                'type': 'postback',
-                'title': 'IT',
-                'payload': 'category60c31e3a402ea31191ba72a4'
-              },
-              {
-                'type': 'postback',
-                'title': 'IT',
-                'payload': 'category60c31e3a402ea31191ba72a4'
-              },
-              {
-                'type': 'postback',
-                'title': 'IT',
-                'payload': 'category60c31e3a402ea31191ba72a4'
-              },
-              {
-                'type': 'postback',
-                'title': 'IT',
-                'payload': 'category60c31e3a402ea31191ba72a4'
-              },
-              {
-                'type': 'postback',
-                'title': 'IT',
-                'payload': 'category60c31e3a402ea31191ba72a4'
-              }
-            ]
-          }]
-        }
-      }
-    };
-    console.log(response.attachment.payload);
-    console.log(response.attachment.payload.elements[0]);
-    console.log(response.attachment.payload.elements[0].buttons);
-    callSendAPI(senderPsid, response);
-    return;
-  } catch (err) {
-    console.error(err);
-  }
-}
+// async function sendCategories(senderPsid) {
+//   try {
+//     const _response = await getCategories();
+//     let results = _response.data;
+//     const buttons = [];
+//     results.forEach(element => {
+//       buttons.push(
+//         {
+//           'type': 'postback',
+//           'title': `${element.name}`,
+//           'payload': `category:${element._id}`,
+//         }
+//       );
+//     });
+//     console.log(JSON.stringify(buttons));
+//     console.log(JSON.parse(JSON.stringify(buttons)));
+//     const response = {
+//       'attachment': {
+//         'type': 'template',
+//         'payload': {
+//           'template_type': 'generic',
+//           'elements': [{
+//             'title': `Tìm kiếm khoá học theo danh mục`,
+//             'subtitle': `Chọn một trong các lựa chọn bên dưới`,
+//             'buttons': [
+//               {
+//                 'type': 'postback',
+//                 'title': 'IT',
+//                 'payload': 'category60c31e3a402ea31191ba72a4'
+//               },
+//               {
+//                 'type': 'postback',
+//                 'title': 'IT',
+//                 'payload': 'category60c31e3a402ea31191ba72a4'
+//               },
+//               {
+//                 'type': 'postback',
+//                 'title': 'IT',
+//                 'payload': 'category60c31e3a402ea31191ba72a4'
+//               },
+//               {
+//                 'type': 'postback',
+//                 'title': 'IT',
+//                 'payload': 'category60c31e3a402ea31191ba72a4'
+//               },
+//               {
+//                 'type': 'postback',
+//                 'title': 'IT',
+//                 'payload': 'category60c31e3a402ea31191ba72a4'
+//               }
+//             ]
+//           }]
+//         }
+//       }
+//     };
+//     callSendAPI(senderPsid, response);
+//     return;
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }
 
-async function sendCoursesByCategory(senderPsid, categoryId) {
-  try {
-    const _response = await getCoursesByCategory(categoryId);
-    let results = _response.data.results;
-    sendCourses(senderPsid, results)
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-function sendCourses(senderPsid, results) {
-  const elements = [];
-  results.forEach(element => {
-    elements.push({
-      'title': `${element.name}`,
-      'subtitle': `${element.shortDescription}`,
-      'image_url': `${element.imageUrl}`,
-      'buttons': [
-        {
-          'type': 'postback',
-          'title': 'Xem chi tiết!',
-          'payload': 'view_detail',
-        },
-      ]
-    });
-  });
-
-  const response = {
-    'attachment': {
-      'type': 'template',
-      'payload': {
-        'template_type': 'generic',
-        'elements': elements
-      }
-    }
-  };
-  callSendAPI(senderPsid, response);
-  return;
-}
-
-// Sends response messages via the Send API
-function callSendAPI(senderPsid, response) {
-
-  // The page access token we have generated in your app settings
-  const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
-
-  // Construct the message body
-  let requestBody = {
-    'recipient': {
-      'id': senderPsid
-    },
-    'message': response
-  };
-
-  // Send the HTTP request to the Messenger Platform
-  request({
-    'uri': 'https://graph.facebook.com/v2.6/me/messages',
-    'qs': { 'access_token': PAGE_ACCESS_TOKEN },
-    'method': 'POST',
-    'json': requestBody
-  }, (err, _res, _body) => {
-    if (!err) {
-      console.log('Message sent!');
-    } else {
-      console.error('Unable to send message:' + err);
-    }
-  });
-}
-
-// Sends response messages via the Send API
-function callSendPersistentMenu(senderPsid) {
-
-  // The page access token we have generated in your app settings
-  const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
-
-  // Construct the message body
-  let requestBody = {
-    'psid': senderPsid,
-    "persistent_menu": [
-      {
-        "locale": "default",
-        "composer_input_disabled": false,
-        "call_to_actions": [
-          {
-            "type": "postback",
-            "title": "Talk to an agent",
-            "payload": "CARE_HELP"
-          },
-          {
-            "type": "postback",
-            "title": "Outfit suggestions",
-            "payload": "CURATION"
-          },
-          {
-            "type": "web_url",
-            "title": "Shop now",
-            "url": "https://www.originalcoastclothing.com/",
-            "webview_height_ratio": "full"
-          }
-        ]
-      }
-    ]
-  };
-
-  console.log(requestBody);
-  // Send the HTTP request to the Messenger Platform
-  request({
-    'uri': 'https://graph.facebook.com/v11.0/me/custom_user_settings',
-    'qs': { 'access_token': PAGE_ACCESS_TOKEN },
-    'method': 'POST',
-    'json': requestBody
-  }, (err, _res, _body) => {
-    if (!err) {
-      console.log('Message sent 2!');
-    } else {
-      console.error('Unable to send message:' + err);
-    }
-  });
-}
-
+// async function sendCoursesByCategory(senderPsid, categoryId) {
+//   try {
+//     const _response = await getCoursesByCategory(categoryId);
+//     let results = _response.data.results;
+//     sendCourses(senderPsid, results)
+//   } catch (err) {
+//     console.error(err);
+//   }
+// }
 
 module.exports = router;
