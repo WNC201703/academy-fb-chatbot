@@ -47,7 +47,7 @@ async function handleMessage(senderPsid, receivedMessage) {
 }
 
 async function handleGetCoursesByKeyword(senderPsid, keyword) {
-    console.log(handleGetcoursesByKeyword);
+    console.log('handleGetcoursesByKeyword');
     try {
         const _response = await getCoursesByKeyword(keyword);
         let results = _response.data.results;
