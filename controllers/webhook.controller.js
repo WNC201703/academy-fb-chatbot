@@ -96,10 +96,16 @@ function sendCourses(senderPsid, results) {
 
 async function handlePostback(senderPsid, receivedPostback) {
     let payload = receivedPostback.payload;
-    console.log('payload',payload);
+    console.log('payload', payload);
     switch (payload) {
         case payloadType.SEARCH_BY_KEYWORD:
-            response = { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react' };
+            const requestBody = {
+                "recipient": {
+                    "id": senderPsid
+                },
+                "message": { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react' }
+            }
+            postRequest(messengerUri.MESSAGES,);
             return;
         case payloadType.GET_COURSES_BY_CATEGORY:
             return;
