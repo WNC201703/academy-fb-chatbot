@@ -323,7 +323,8 @@ function callSendPersistentMenu(senderPsid) {
   console.log(requestBody);
   // Send the HTTP request to the Messenger Platform
   request({
-    'uri': `https://graph.facebook.com/v11.0/me/custom_user_settings?access_token=${PAGE_ACCESS_TOKEN}`,
+    'uri': 'https://graph.facebook.com/v11.0/me/custom_user_settings',
+    'qs': { 'access_token': PAGE_ACCESS_TOKEN },
     'method': 'POST',
     'json': requestBody
   }, (err, _res, _body) => {
