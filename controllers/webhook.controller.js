@@ -31,6 +31,7 @@ function setupPersistentMenu(senderPsid) {
             }
         ]
     };
+    console.log('setup persistent_menu');
     postRequest(messengerUri.CUSTOM_USER_SETTINGS, requestBody);
 }
 
@@ -59,7 +60,7 @@ function sendCourses(senderPsid, results) {
     const elements = [];
     results.forEach(element => {
         elements.push({
-            'title': `${element.name}`,
+            'title': `${element.name}(${element.numberOfReviews} reviews)`,
             'subtitle': `${element.shortDescription}`,
             'image_url': `${element.imageUrl}`,
             'buttons': [
