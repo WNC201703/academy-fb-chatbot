@@ -97,7 +97,7 @@ function sendCourses(senderPsid, results) {
 function getStarted() {
     const requestBody = {
         "get_started": {
-            "payload": "GET_STARTED_PAYLOAD"
+            "payload": payloadType.GET_STARTED
         }
     }
     postRequest(messengerUri.MESSENGER_PROFILE, requestBody);
