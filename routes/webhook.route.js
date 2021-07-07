@@ -320,6 +320,7 @@ function callSendPersistentMenu(senderPsid) {
     ]
   };
 
+  console.log(requestBody);
   // Send the HTTP request to the Messenger Platform
   request({
     'uri': 'https://graph.facebook.com/v11.0/me/custom_user_settings',
@@ -328,7 +329,7 @@ function callSendPersistentMenu(senderPsid) {
     'json': requestBody
   }, (err, _res, _body) => {
     if (!err) {
-      console.log('Message sent!');
+      console.log('Message sent 2!');
     } else {
       console.error('Unable to send message:' + err);
     }
