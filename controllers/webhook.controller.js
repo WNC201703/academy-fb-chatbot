@@ -114,7 +114,7 @@ async function handlePostback(senderPsid, receivedPostback) {
             return;
         
         default:
-            console.log(payload.search('category#'));
+            console.log(payload,'category#',payload.search('category#'));
             if (payload.search('category#') === 0) {
                 console.log('hello');
                 const categoryId = receivedMessage.text.substring(9);
