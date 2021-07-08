@@ -77,10 +77,10 @@ function sendCourses(senderPsid, results) {
             "image_url": `${element.imageUrl}`,
             "buttons": [
                 {
-                    "title": "Join Now",
+                    "title": "Chi tiết khoá học",
                     "type": "web_url",
                     "url": `https://www.google.com/search?q=${element.name}`,
-                    "messenger_extensions": false,
+                    "messenger_extensions": true,
                     "webview_height_ratio": "tall"
                 }
             ]
