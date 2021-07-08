@@ -57,10 +57,6 @@ async function handleGetCoursesByKeyword(senderPsid, keyword) {
     try {
         const _response = await getCoursesByKeyword(keyword);
         let results = _response.data.results;
-        if (results.length === 0) {
-            sendText(senderPsid, 'Không tìm thấy kết quả, vui lòng thử lại!!!')
-            return;
-        }
         sendCourses(senderPsid, results);
     }
     catch (err) {
@@ -69,6 +65,10 @@ async function handleGetCoursesByKeyword(senderPsid, keyword) {
 }
 
 function sendCourses(senderPsid, results) {
+    if (results.length === 0) {
+        sendText(senderPsid, 'Không tìm thấy kết quả, vui lòng thử lại!!!')
+        return;
+    }
     const elements = [];
     results.forEach(element => {
         elements.push({
