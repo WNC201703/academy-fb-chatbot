@@ -1,4 +1,4 @@
-const { postRequest,sendMessage } = require('../utils/httpRequest')
+const { postRequest } = require('../utils/httpRequest')
 const { payloadType } = require('../utils/constant')
 const { messengerUri } = require('../utils/constant')
 const { getCoursesByKeyword, getCategories, getCoursesByCategory } = require('../utils/api.helper');
@@ -47,12 +47,11 @@ async function handleMessage(senderPsid, receivedMessage) {
 }
 
 async function handleGetCoursesByKeyword(senderPsid, keyword) {
-    console.log('handleGetcoursesByKeyword');
     try {
         const _response = await getCoursesByKeyword(keyword);
         let results = _response.data.results;
-        if (results.length===0){
-            sendMessage(senderPsid,'Không tìm thấy kết quả, vui lòng thử lại!!!')
+        if (results.length === 0) {
+            sendText(senderPsid, 'Không tìm thấy kết quả, vui lòng thử lại!!!')
             return;
         }
         sendCourses(senderPsid, results);
@@ -105,24 +104,76 @@ async function handlePostback(senderPsid, receivedPostback) {
     console.log('payload', payload);
     switch (payload) {
         case payloadType.SEARCH_BY_KEYWORD:
-            sendMessage(senderPsid,'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react');
+            sendText(senderPsid, 'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react');
             return;
         case payloadType.GET_COURSES_BY_CATEGORY:
+            sendCategories(senderPsid);
             return;
-
-        case payloadType.VIEW_COURSE_DETAILS:
-            return;
-
         case payloadType.GET_STARTED:
             setupPersistentMenu(senderPsid);
             return;
+        
+        default:
+            if (payload.search('category#') === 0) {
+                const categoryId = receivedMessage.text.substring(9);
+                await sendCoursesByCategory(senderPsid, categoryId);
+                return;
+            }
     }
 
-    if (payload.search('category:') === 0) {
-        const categoryId = receivedMessage.text.substring(9);
-        await sendCoursesByCategory(senderPsid, categoryId);
+    
+}
+
+async function sendCategories(senderPsid) {
+    try {
+        const _response = await getCategories();
+        let results = _response.data;
+        const quickReplies = [];
+        results.forEach(element => {
+            quickReplies.push(
+                {
+                    "content_type": "text",
+                    'title': `${element.name}`,
+                    'payload': `category#${element._id}`
+                }
+            );
+        });
+        const requestBody = {
+            "recipient": {
+                "id": senderPsid
+            },
+            "messaging_type": "RESPONSE",
+            "message": {
+                "text": "Chọn một trong các danh mục sau:",
+                "quick_replies": quickReplies
+            }
+        };
+
+        postRequest(messengerUri.MESSAGES, requestBody);
         return;
+    } catch (err) {
+        console.error(err);
     }
+}
+
+async function sendCoursesByCategory(senderPsid, categoryId) {
+  try {
+    const _response = await getCoursesByCategory(categoryId);
+    let results = _response.data.results;
+    sendCourses(senderPsid, results)
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function sendText(senderPsid, message) {
+    const requestBody = {
+        "recipient": {
+            "id": senderPsid
+        },
+        "message": { 'text': message }
+    }
+    postRequest(messengerUri.MESSAGES, requestBody);
 }
 
 function getStarted() {
