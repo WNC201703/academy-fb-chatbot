@@ -80,7 +80,7 @@ function sendCourses(senderPsid, results) {
                     "title": "Chi tiết khoá học",
                     "type": "web_url",
                     "url": `https://www.google.com/search?q=${element.name}`,
-                    "messenger_extensions": true,
+                    "messenger_extensions": false,
                     "webview_height_ratio": "tall"
                 }
             ]
