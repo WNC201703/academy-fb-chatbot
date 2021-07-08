@@ -38,7 +38,7 @@ function setupPersistentMenu(senderPsid) {
 
 
 async function handleMessage(senderPsid, receivedMessage) {
-    console.log('handle',receivedMessage.text,receivedMessage.text.toLowerCase().search('#'));
+    console.log('handle', receivedMessage.text, receivedMessage.text.toLowerCase().search('#'));
     if (receivedMessage.text && receivedMessage.text.toLowerCase().search('#') === 0) {
         const keyword = receivedMessage.text.substring(7);
         await handleGetCoursesByKeyword(senderPsid, keyword);
@@ -62,10 +62,10 @@ function sendCourses(senderPsid, results) {
     const elements = [];
     results.forEach(element => {
         elements.push({
-            'title': `${element.name} (${element.numberOfReviews} reviews)`,
-            'subtitle': `${element.shortDescription}`,
-            'image_url': `${element.imageUrl}`,
-            'buttons': [
+            "title": `${element.name} (${element.numberOfReviews} reviews)`,
+            "subtitle": `${element.shortDescription}`,
+            "image_url": `${element.imageUrl}`,
+            "buttons": [
                 {
                     "title": "Join Now",
                     "type": "web_url",
@@ -85,8 +85,8 @@ function sendCourses(senderPsid, results) {
             "attachment": {
                 "type": "template",
                 "payload": {
-                    "template_type": "list",
-                    "top_element_style": "compact",
+                    "template_type": "generic",
+                    // "top_element_style": "compact",
                     "elements": elements
                 }
             }
@@ -107,7 +107,7 @@ async function handlePostback(senderPsid, receivedPostback) {
                 },
                 "message": { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react' }
             }
-            postRequest(messengerUri.MESSAGES,requestBody);
+            postRequest(messengerUri.MESSAGES, requestBody);
             return;
         case payloadType.GET_COURSES_BY_CATEGORY:
             return;
