@@ -46,7 +46,7 @@ async function handleMessage(senderPsid, receivedMessage) {
     if (receivedMessage.quick_reply) {
         const payload = receivedMessage.quick_reply.payload;
         if (payload.search('category#') === 0) {
-            const categoryId = receivedMessage.text.substring(9);
+            const categoryId = payload.substring(9);
             await sendCoursesByCategory(senderPsid, categoryId);
             return;
         }
