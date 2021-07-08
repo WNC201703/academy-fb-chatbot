@@ -1,7 +1,7 @@
-const { postRequest } = require('../utils/httpRequest')
+const { postRequest,sendMessage } = require('../utils/httpRequest')
 const { payloadType } = require('../utils/constant')
 const { messengerUri } = require('../utils/constant')
-const { getCoursesByKeyword, getCategories, getCoursesByCategory,sendMessage } = require('../utils/api.helper');
+const { getCoursesByKeyword, getCategories, getCoursesByCategory } = require('../utils/api.helper');
 
 function setupPersistentMenu(senderPsid) {
     const requestBody = {
