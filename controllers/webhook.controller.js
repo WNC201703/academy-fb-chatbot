@@ -89,7 +89,6 @@ function sendCourses(senderPsid, results) {
                 "type": "template",
                 "payload": {
                     "template_type": "generic",
-                    // "top_element_style": "compact",
                     "elements": elements
                 }
             }
@@ -140,6 +139,7 @@ async function sendCategories(senderPsid) {
                 }
             );
         });
+        console.log(quickReplies);
         const requestBody = {
             "recipient": {
                 "id": senderPsid
