@@ -38,7 +38,7 @@ function setupPersistentMenu(senderPsid) {
 
 
 async function handleMessage(senderPsid, receivedMessage) {
-    console.log('handle', receivedMessage.text, receivedMessage.text.toLowerCase().search('#'));
+    console.log(receivedMessage.quick_reply.payload);
     if (receivedMessage.text && receivedMessage.text.toLowerCase().search('#') === 0) {
         const keyword = receivedMessage.text.substring(1);
         await handleGetCoursesByKeyword(senderPsid, keyword);
