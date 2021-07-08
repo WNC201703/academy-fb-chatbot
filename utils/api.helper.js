@@ -7,7 +7,7 @@ async function getCoursesByKeyword(keyword) {
 }
 
 async function getCategories() {
-    const uri = `https://hd-academy-api.herokuapp.com/api/categories`;
+    const uri = `https://hd-academy-api.herokuapp.com/api/categories?level=2`;
     const response = await axios.get(uri);
     return response;
 }
