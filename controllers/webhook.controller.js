@@ -38,11 +38,18 @@ function setupPersistentMenu(senderPsid) {
 
 
 async function handleMessage(senderPsid, receivedMessage) {
-    console.log(receivedMessage.quick_reply.payload);
     if (receivedMessage.text && receivedMessage.text.toLowerCase().search('#') === 0) {
         const keyword = receivedMessage.text.substring(1);
         await handleGetCoursesByKeyword(senderPsid, keyword);
         return;
+    }
+    if (receivedMessage.quick_reply) {
+        const payload = receivedMessage.quick_reply.payload;
+        if (payload.search('category#') === 0) {
+            const categoryId = receivedMessage.text.substring(9);
+            await sendCoursesByCategory(senderPsid, categoryId);
+            return;
+        }
     }
 }
 
@@ -111,18 +118,11 @@ async function handlePostback(senderPsid, receivedPostback) {
         case payloadType.GET_STARTED:
             setupPersistentMenu(senderPsid);
             return;
-        
+
         default:
-            console.log(payload,'category#',payload.search('category#'));
-            if (payload.search('category#') === 0) {
-                console.log('hello');
-                const categoryId = receivedMessage.text.substring(9);
-                await sendCoursesByCategory(senderPsid, categoryId);
-                return;
-            }
     }
 
-    
+
 }
 
 async function sendCategories(senderPsid) {
@@ -159,13 +159,13 @@ async function sendCategories(senderPsid) {
 }
 
 async function sendCoursesByCategory(senderPsid, categoryId) {
-  try {
-    const _response = await getCoursesByCategory(categoryId);
-    let results = _response.data.results;
-    sendCourses(senderPsid, results)
-  } catch (err) {
-    console.error(err);
-  }
+    try {
+        const _response = await getCoursesByCategory(categoryId);
+        let results = _response.data.results;
+        sendCourses(senderPsid, results)
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 function sendText(senderPsid, message) {
