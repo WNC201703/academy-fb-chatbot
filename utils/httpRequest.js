@@ -1,5 +1,6 @@
 const request = require('request');
 const accessToken = process.env.PAGE_ACCESS_TOKEN;
+const { messengerUri } = require('../utils/constant')
 
 function postRequest(uri, requestBody) {
     console.log(`post request ${uri}`)
@@ -16,6 +17,17 @@ function postRequest(uri, requestBody) {
     });
 }
 
+function sendMessage(senderPsid,message){
+    const requestBody = {
+        "recipient": {
+            "id": senderPsid
+        },
+        "message": { 'text': message }
+    }
+    postRequest(messengerUri.MESSAGES, requestBody);
+}
+
 module.exports = {
-    postRequest
+    postRequest,
+    sendMessage
 }

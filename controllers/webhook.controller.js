@@ -1,7 +1,7 @@
 const { postRequest } = require('../utils/httpRequest')
 const { payloadType } = require('../utils/constant')
 const { messengerUri } = require('../utils/constant')
-const { getCoursesByKeyword, getCategories, getCoursesByCategory } = require('../utils/api.helper');
+const { getCoursesByKeyword, getCategories, getCoursesByCategory,sendMessage } = require('../utils/api.helper');
 
 function setupPersistentMenu(senderPsid) {
     const requestBody = {
@@ -51,6 +51,10 @@ async function handleGetCoursesByKeyword(senderPsid, keyword) {
     try {
         const _response = await getCoursesByKeyword(keyword);
         let results = _response.data.results;
+        if (results.length===0){
+            sendMessage(senderPsid,'Không tìm thấy kết quả, vui lòng thử lại!!!')
+            return;
+        }
         sendCourses(senderPsid, results);
     }
     catch (err) {
@@ -101,13 +105,7 @@ async function handlePostback(senderPsid, receivedPostback) {
     console.log('payload', payload);
     switch (payload) {
         case payloadType.SEARCH_BY_KEYWORD:
-            const requestBody = {
-                "recipient": {
-                    "id": senderPsid
-                },
-                "message": { 'text': 'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react' }
-            }
-            postRequest(messengerUri.MESSAGES, requestBody);
+            sendMessage(senderPsid,'Để tìm khoá học theo từ khoá, bạn gõ "#<TÊN KHOÁ HỌC>". Ví dụ: #react');
             return;
         case payloadType.GET_COURSES_BY_CATEGORY:
             return;
