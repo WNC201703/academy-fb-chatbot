@@ -80,8 +80,7 @@ function sendCourses(senderPsid, results) {
                     "title": "Chi tiết khoá học",
                     "type": "web_url",
                     "url": `https://www.google.com/search?q=${element.name}`,
-                    "messenger_extensions": false,
-                    "webview_height_ratio": "tall"
+                    "webview_height_ratio": "full"
                 }
             ]
         });
@@ -130,14 +129,19 @@ async function sendCategories(senderPsid) {
         const _response = await getCategories();
         let results = _response.data;
         const quickReplies = [];
-        results.forEach(element => {
-            quickReplies.push(
-                {
-                    "content_type": "text",
-                    'title': `${element.name}`,
-                    'payload': `category#${element._id}`
-                }
-            );
+        results.forEach(category => {
+            const subCategories = category.childrens;
+            if (subCategories) {
+                subCategories.forEach(subCategory => {
+                    quickReplies.push(
+                        {
+                            "content_type": "text",
+                            'title': `${subCategory.name}`,
+                            'payload': `category#${subCategory._id}`
+                        }
+                    );
+                });
+            }
         });
         console.log(quickReplies);
         const requestBody = {
