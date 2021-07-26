@@ -24,7 +24,7 @@ function setupPersistentMenu(senderPsid) {
                     {
                         "type": "web_url",
                         "title": "Đăng ký học ngay",
-                        "url": "http://hh-academy.herokuapp.com/",
+                        "url": "http://hh-academy.herokuapp.com",
                         "webview_height_ratio": "full"
                     }
                 ]
