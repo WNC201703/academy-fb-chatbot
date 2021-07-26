@@ -130,7 +130,7 @@ async function sendCategories(senderPsid) {
         let results = _response.data;
         const quickReplies = [];
         results.forEach(category => {
-            const subCategories = category.childrens;
+            const subCategories = category.children;
             if (subCategories) {
                 subCategories.forEach(subCategory => {
                     quickReplies.push(
