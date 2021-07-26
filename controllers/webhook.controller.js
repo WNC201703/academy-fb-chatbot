@@ -194,7 +194,7 @@ function getStarted() {
 function setupWhitelistedDomains() {
     const requestBody = {
         "whitelisted_domains": [
-            "https://google.com"
+            "https://hh-academy.herokuapp.com"
         ]
     };
     postRequest(messengerUri.MESSENGER_PROFILE, requestBody);
