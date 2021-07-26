@@ -24,7 +24,7 @@ function setupPersistentMenu(senderPsid) {
                     {
                         "type": "web_url",
                         "title": "Đăng ký học ngay",
-                        "url": "https://www.google.com/",
+                        "url": "http://hh-academy.herokuapp.com/",
                         "webview_height_ratio": "full"
                     }
                 ]
@@ -79,7 +79,7 @@ function sendCourses(senderPsid, results) {
                 {
                     "title": "Chi tiết khoá học",
                     "type": "web_url",
-                    "url": `https://www.google.com/search?q=${element.name}`,
+                    "url": `https://hh-academy.herokuapp.com/courses/${element._id}`,
                     "webview_height_ratio": "full"
                 }
             ]
