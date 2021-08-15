@@ -19,7 +19,7 @@ async function getCoursesByCategory(id) {
 }
 
 async function getCourseDetail(courseId){
-    const uri = `https://hd-academy-api.herokuapp.com/api/courses/${id}`;
+    const uri = `https://hd-academy-api.herokuapp.com/api/courses/${courseId}`;
     const response = await axios.get(uri);
     return response;
 }
@@ -28,4 +28,5 @@ module.exports = {
     getCoursesByKeyword,
     getCategories,
     getCoursesByCategory,
+    getCourseDetail,
  }
