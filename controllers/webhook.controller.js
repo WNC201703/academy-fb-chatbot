@@ -78,9 +78,8 @@ function sendCourses(senderPsid, results) {
             "buttons": [
                 {
                     "title": "Chi tiết khoá học",
-                    "type": "web_url",
-                    "url": `https://hh-academy.herokuapp.com/courses/${element._id}`,
-                    "webview_height_ratio": "full"
+                    "type": "postback",
+                    "payload":`course#${element._id}`
                 }
             ]
         });
@@ -119,8 +118,12 @@ async function handlePostback(senderPsid, receivedPostback) {
             return;
 
         default:
+            if  (payload.search('course#') === 0) {
+                const courseId = payload.substring(7);
+            await sendCourseDetail(senderPsid, courseId);
+            return;
+            }
     }
-
 
 }
 
@@ -167,6 +170,26 @@ async function sendCoursesByCategory(senderPsid, categoryId) {
         const _response = await getCoursesByCategory(categoryId);
         let results = _response.data.results;
         sendCourses(senderPsid, results)
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function sendCourseDetail(senderPsid, courseId) {
+    try {
+        const _response = await getCourseDetail(courseId);
+        const course = _response.data;
+        const requestBody = {
+            "recipient": {
+                "id": `${senderPsid}`
+            },
+            "message": {
+                "text": 
+                    `*Name: ${course.name}\u000A*Category: ${course.category}\u000A*Teacher: ${course.teacher}\u000A*Rating: ${course.averageRating}(${course.numberOfReviews})\u000A*Price: ${price}$\u000A*Detail: ${course.shortDescription}`
+            }
+        };
+        postRequest(messengerUri.MESSAGES, requestBody);
+        return;
     } catch (err) {
         console.error(err);
     }
