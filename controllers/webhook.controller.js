@@ -185,7 +185,7 @@ async function sendCourseDetail(senderPsid, courseId) {
             },
             "message": {
                 "text": 
-                    `*Name: ${course.name}\u000A*Category: ${course.category}\u000A*Teacher: ${course.teacher}\u000A*Rating: ${course.averageRating}(${course.numberOfReviews})\u000A*Price: ${price}$\u000A*Detail: ${course.shortDescription}`
+                    `*Name: ${course.name}\u000A*Category: ${course.category}\u000A*Teacher: ${course.teacher}\u000A*Rating: ${course.averageRating}(${course.numberOfReviews})\u000A*Price: ${course.price}$\u000A*Detail: ${course.shortDescription}`
             }
         };
         postRequest(messengerUri.MESSAGES, requestBody);
